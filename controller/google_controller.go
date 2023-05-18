@@ -9,7 +9,7 @@ import (
 
 type GoogleController interface {
 	IndexHandler(w http.ResponseWriter, r *http.Request)
-	// GoogleLoginHandler(w http.ResponseWriter, r *http.Request)
+	GoogleLoginHandler(w http.ResponseWriter, r *http.Request)
 	// GoogleCallbackHandler(w http.ResponseWriter, r *http.Request)
 }
 
@@ -24,16 +24,14 @@ func NewGoogleController(conf *oauth2.Config) GoogleController {
 }
 
 func (c *controller) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(c.oauthConf)
-	var html = `<html><body><a href="/google/login">Google Login</a></body></html>`
+	var html = `<html><body><a href="/google/login">GoogleでLogin</a></body></html>`
 	fmt.Fprintf(w, html)
 }
 
-// func (*googleController) GoogleLoginHandler(w http.ResponseWriter, r *http.Request) {
-
-// 	url := GetGoogleLoginURL()
-// 	http.Redirect(w, r, url, http.StatusFound)
-// }
+func (c *controller) GoogleLoginHandler(w http.ResponseWriter, r *http.Request) {
+	url := c.oauthConf.AuthCodeURL("random")
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+}
 
 // func (*googleController) GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 // 	profile, err := GetGoogleProfile(r)
