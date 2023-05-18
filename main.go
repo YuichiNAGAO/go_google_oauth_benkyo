@@ -16,7 +16,7 @@ var (
 func main() {
 	http.HandleFunc("/", googleController.IndexHandler)
 	http.HandleFunc("/google/login", googleController.GoogleLoginHandler)
-	// http.HandleFunc("/google/callback", googleController.GoogleCallbackHandler)
+	http.HandleFunc("/google/callback", googleController.GoogleCallbackHandler)
 	fmt.Println("Server is running at http://localhost:8080/")
 	http.ListenAndServe(":8080", nil)
 }
