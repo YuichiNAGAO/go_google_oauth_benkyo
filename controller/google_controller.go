@@ -37,12 +37,24 @@ func (c *controller) IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *controller) GoogleLoginHandler(w http.ResponseWriter, r *http.Request) {
-	url := c.oauthConf.AuthCodeURL("random")
+	state := "random"
+	url := c.oauthConf.AuthCodeURL(state)
+	fmt.Println(url)
+	cookie := &http.Cookie{
+		Name: "token",
+		// 認証用のトークン。jwt入れることも多いと思います
+		Value: state,
+	}
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func (c *controller) GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
-	if r.FormValue("state") != "random" {
+	state, err := r.Cookie("token")
+	fmt.Println(state.Value)
+	fmt.Println(r.FormValue("state"))
+
+	if r.FormValue("state") != state.Value {
 		fmt.Fprintf(w, "Invalid state parameter")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
